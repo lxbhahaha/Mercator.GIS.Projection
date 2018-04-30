@@ -27,7 +27,7 @@ namespace Mercator.GIS.Projection
         {
             get
             {
-                return φ0;
+                return φ0 * 180 / Math.PI;
             }
         }
 
@@ -38,11 +38,12 @@ namespace Mercator.GIS.Projection
         {
             get
             {
-                return λ0;
+                var centralMeridian = λ0 * 180 / Math.PI;
+                return centralMeridian;
             }
             set
             {
-                λ0 = value;
+                λ0 = value * Math.PI / 180;
             }
         }
 
@@ -111,7 +112,7 @@ namespace Mercator.GIS.Projection
         /// <summary>
         /// False easting 
         /// </summary>
-        private double FE;
+        private double FE = 500000.0;
 
         /// <summary>
         /// False northing 
@@ -154,7 +155,7 @@ namespace Mercator.GIS.Projection
 
         public ReferenceEllipsoid Ellipsoid;
 
-        public void Forward(double φ, double λ, out double E, out double N)
+        private void ForwardByRadian(double φ, double λ, out double E, out double N)
         {
             double h1 = n / 2 - 2.0 / 3.0 * Math.Pow(n, 2) + 5.0 / 16.0 * Math.Pow(n, 3) + 41.0 / 180.0 * Math.Pow(n, 4);
             double h2 = 13.0 / 48.0 * Math.Pow(n, 2) - 3.0 / 4.0 * Math.Pow(n, 3) + 557.0 / 1440.0 * Math.Pow(n, 4);
@@ -182,7 +183,14 @@ namespace Mercator.GIS.Projection
             N = FN + k0 * (B * ξ - M0);
         }
 
-        public void Reverse(double E, double N, out double φ, out double λ)
+        public void Forward(double latitude,double longitude, out double E, out double N)
+        {
+            var φ = latitude * Math.PI / 180;
+            var λ = longitude * Math.PI / 180;
+            ForwardByRadian(φ, λ, out E, out N);
+        }
+
+        private void ReverseByRadian(double E, double N, out double φ, out double λ)
         {
             double h1ˊ = n / 2.0 - 2.0 / 3.0 * Math.Pow(n, 2) + 37.0 / 96.0 * Math.Pow(n, 3) - 1 / 360.0 * Math.Pow(n, 4);
             double h2ˊ = 1 / 48.0 * Math.Pow(n, 2) + 1 / 15.0 * Math.Pow(n, 3) - 437.0 / 1440.0 * Math.Pow(n, 4);
@@ -216,6 +224,14 @@ namespace Mercator.GIS.Projection
 
             φ = Math.Atan(Math.Sinh(Qˊˊ));
             λ = λ0 + Math.Asin(Math.Tanh(η0ˊ) / Math.Cos(βˊ));
+        }
+
+        public void Reverse(double E, double N, out double latitude, out double longitude)
+        {
+            double φ, λ;
+            ReverseByRadian(E, N, out φ, out λ);
+            latitude = φ * 180 / Math.PI;
+            longitude = λ * 180 / Math.PI;
         }
     }
 }
