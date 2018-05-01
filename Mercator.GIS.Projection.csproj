@@ -46,9 +46,13 @@
     <Compile Include="TransverseMercator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Mercator.Mathematics\Calculus\Mercator.Mathematics.Calculus.csproj">
+    <ProjectReference Include="..\Mercator.Mathematics.Calculus\Mercator.Mathematics.Calculus.csproj">
       <Project>{3f2bb295-c358-4385-b7eb-abe2238e0bec}</Project>
       <Name>Mercator.Mathematics.Calculus</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mercator.Mathematics.LinearAlgebra\Mercator.Mathematics.LinearAlgebra.csproj">
+      <Project>{1e8e508c-1dcb-4b0e-abfb-1575210f17c3}</Project>
+      <Name>Mercator.Mathematics.LinearAlgebra</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
